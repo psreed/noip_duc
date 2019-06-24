@@ -17,6 +17,7 @@ class noip_duc (
   String $grep = '/usr/bin/grep',
   String $awk = '/usr/bin/awk',
   String $kill = '/usr/bin/kill',
+  String $noip2 = '/usr/sbin/noip2',
 ) {
 
   package { $package: ensure => present, }
@@ -32,7 +33,7 @@ class noip_duc (
 
   exec { 'configure':
     creates => $conf_file,
-    command => "noip2 -C -U ${minutes} -u '${username}' -p '${password}' -I '${interface}'",
+    command => "${noip2} -C -U ${minutes} -u '${username}' -p '${password}' -I '${interface}'",
     require => Package[$package],
   }
 
