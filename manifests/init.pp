@@ -10,22 +10,25 @@ class noip_duc (
   String $package = 'noip',
   String $conf_file = '/etc/no-ip2.conf',
   String $service_file = '/etc/systemd/system/noip2.service',
+  String $service_name = 'noip2',
   Boolean $update_config = true,
 ) {
 
   package { $package: ensure => present, }
 
-#  exec { 'unconfigure':
-#TODO: remove configurate to force new config creation when $update_config is set to true.
-# This process will need to stop the service and kill any noip2 processes, as the config file will be locked. 
-#    command => "rm ${conf_file}"
-#     before => Exec['configure'],
-#  }
+  if ($update_config = true) {
+  # Remove configuration to force new config creation when $update_config is set to true.
+  # This process will need to stop the service and kill any noip2 processes, as the config file will be locked. 
+    exec { 'unconfigure':
+      command => "systemctl stop ${service_name}; PID=`ps ax | grep ${service_name} | grep -v grep | awk '{print \$1}'`; kill \$PID; rm -f ${conf_file}", #lint:ignore:140chars
+      before  => Exec['configure'],
+    }
+  }
 
   exec { 'configure':
-    creates  => $conf_file,
-    command  => "noip2 -C -U ${minutes} -u '${username}' -p '${password}' -I '${interface}'",
-    requires => Package[$package],
+    creates => $conf_file,
+    command => "noip2 -C -U ${minutes} -u '${username}' -p '${password}' -I '${interface}'",
+    require => Package[$package],
   }
 
   file { $service_file:
