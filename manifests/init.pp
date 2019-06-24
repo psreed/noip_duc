@@ -11,7 +11,7 @@ class noip_duc (
   String $conf_file = '/etc/no-ip2.conf',
   String $service_file = '/etc/systemd/system/noip2.service',
   String $service_name = 'noip2',
-  Boolean $update_config = true,
+  Boolean $update_config = false,
   String $systemctl = '/usr/bin/systemctl',
   String $ps = '/usr/bin/ps',
   String $grep = '/usr/bin/grep',
