@@ -16,7 +16,7 @@ class noip_duc (
 
   package { $package: ensure => present, }
 
-  if ($update_config = true) {
+  if ($update_config == true) {
   # Remove configuration to force new config creation when $update_config is set to true.
   # This process will need to stop the service and kill any noip2 processes, as the config file will be locked. 
     exec { 'unconfigure':
