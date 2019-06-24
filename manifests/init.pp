@@ -12,6 +12,11 @@ class noip_duc (
   String $service_file = '/etc/systemd/system/noip2.service',
   String $service_name = 'noip2',
   Boolean $update_config = true,
+  String $systemctl = '/usr/bin/systemctl',
+  String $ps = '/usr/bin/ps',
+  String $grep = '/usr/bin/grep',
+  String $awk = '/usr/bin/awk',
+  String $kill = '/usr/bin/kill',
 ) {
 
   package { $package: ensure => present, }
@@ -20,7 +25,7 @@ class noip_duc (
   # Remove configuration to force new config creation when $update_config is set to true.
   # This process will need to stop the service and kill any noip2 processes, as the config file will be locked. 
     exec { 'unconfigure':
-      command => "systemctl stop ${service_name}; PID=`ps ax | grep ${service_name} | grep -v grep | awk '{print \$1}'`; kill \$PID; rm -f ${conf_file}", #lint:ignore:140chars
+      command => "${systemctl} stop ${service_name}; PID=`${ps} ax | ${grep} ${service_name} | ${grep} -v grep | ${awk} '{print \$1}'`; if [ \"\$PID\" != \"\" ]; then ${kill} \$PID; fi; rm -f ${conf_file}", #lint:ignore:140chars
       before  => Exec['configure'],
     }
   }
