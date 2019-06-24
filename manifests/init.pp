@@ -39,7 +39,7 @@ class noip_duc (
 
   file { $service_file:
     ensure  => present,
-    content => '# Simple No-ip.com Dynamic DNS Updater
+    content => "# Simple No-ip.com Dynamic DNS Updater
 [Unit]
 Description=No-ip.com dynamic IP address updater
 After=network.target
@@ -51,9 +51,9 @@ Alias=noip.service
 
 [Service]
 # Start main service
-ExecStart=/usr/local/bin/noip2
+ExecStart=${noip2}
 Restart=always
-Type=forking',
+Type=forking",
     require => Package[$package],
   }
 
