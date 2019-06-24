@@ -5,29 +5,9 @@
 class noip_duc (
   String $username,
   String $password,
-  String $cwd = '/tmp',
-  String $package_url = 'http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz',
-  String $extract_dir = 'noip-2.1.9-1',
-  String $target_path = '/usr/local/src',
-  String $download_path = '/tmp/noip-duc-linux.tar.gz',
-  String $binary = '/usr/local/bin/noip2',
-  String $tar = '/usr/bin/tar',
-  String $wget = '/usr/bin/wget',
+  String $package_rpm = 'noip',
 ) {
 
-  file { $target_path:
-    ensure => directory,
-  }
+  package { $package_rpm: ensure => present, }
 
-  exec { 'install':
-    creates => $binary,
-    command => "${wget} ${package_url} -O ${download_path}; ${tar} xvf ${download_path} -C ${target_path}; cd ${target_path}/${extract_dir}; make; make install", #lint:ignore:140chars
-    require => File[$target_path],
-  }
-
-  exec { 'config':
-    creates => '/etc/noip.conf',
-    command => "${binary} -C",
-    require => Exec['install'],
-  }
 }
